@@ -10,7 +10,7 @@ from dolfin import MPI, mpi_comm_world
 import time
 import numpy as np 
 
-ns = [1]
+ns = [3]
 
 MPI_rank = MPI.rank(mpi_comm_world())
 # Input file is steady state from A1
@@ -93,12 +93,12 @@ for n in range(len(ns)):
       
       model.step(dt)
       
-      if i % 20 == 0:
+      if i % 24 == 0:
         out_pfo << model.pfo
         out_h << model.h
         out_N << model.N
         
-      if i % 20 == 0:
+      if i % 24 == 0:
         model.checkpoint(['h', 'phi', 'N', 'm', 'q'])
       
       if MPI_rank == 0: 
