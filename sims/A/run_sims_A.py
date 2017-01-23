@@ -10,12 +10,13 @@ from dolfin import MPI, mpi_comm_world
 import time
 import numpy as np 
 
-ns = [5]
+ns = [6]
 
 MPI_rank = MPI.rank(mpi_comm_world())
 input_files = ['../../inputs/A/input_A' + str(n) + '.hdf5' for n in ns]
 result_dirs = ['results_A' + str(n) for n in ns]
 
+# Conductivities
 ks = [5e-3, 5e-3, 5e-3, 5e-3, 1e-2, 1e-2]
 
 for n in range(len(ns)):
@@ -31,7 +32,8 @@ for n in range(len(ns)):
   model = SheetModel(model_inputs)
   
   # Set conductivity
-  k = interpolate(Constant(ks[n]), model.V_cg)
+  k = interpolate(Constant(ks[ns[n] - 1]), model.V_cg)
+  print ks[ns[n] - 1]
   model.set_k(k)
 
   ### Run the simulation
@@ -39,7 +41,7 @@ for n in range(len(ns)):
   # Seconds per day
   spd = pcs['spd']
   # End time
-  T = 1000.0 * spd
+  T = 1500.0 * spd
   # Time step
   dt = spd / 4.0
   # Iteration count

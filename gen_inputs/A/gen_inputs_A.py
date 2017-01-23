@@ -79,6 +79,7 @@ for n in range(6):
 
   # Get melt rate
   m = interpolate(Constant(melt_rates[n]), V_cg)
+  print assemble(m * dx(mesh))
   f.write(m, "m_0")
   
   f.close()

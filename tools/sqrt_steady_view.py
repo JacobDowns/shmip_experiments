@@ -61,5 +61,8 @@ class SqrtSteadyView(SteadyView):
     return self.width_integrate(self.q)
     
   
+  # Length integrate q
+    
+  
   # Average 
     

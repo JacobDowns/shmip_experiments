@@ -20,7 +20,7 @@ u_b = interpolate(Constant(1e-6), V_cg)
 # Conductivity 
 k = interpolate(Constant(5e-3), V_cg)
 # Initial sheet height  
-h = interpolate(Constant(0.09), V_cg)
+h = interpolate(Constant(0.05), V_cg)
 
 # Length of ice sheet 
 length = 100e3

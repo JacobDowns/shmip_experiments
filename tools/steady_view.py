@@ -32,6 +32,11 @@ class SteadyView(object):
     self.u_b = Function(self.V_cg)
     self.input_file.read(self.u_b, "u_b_0")
     
+    
+    # Melt
+    self.m = Function(self.V_cg)
+    self.input_file.read(self.m, "m_0")
+    
     # Sliding speed
     self.h = Function(self.V_cg)
     self.input_file.read(self.h, "h_0")
@@ -45,8 +50,8 @@ class SteadyView(object):
     self.input_file.read(self.N, "N_0")
     
     # Pressure as fraction of overburden
-    self.pfo = Function(self.V_cg)
-    self.input_file.read(self.pfo, "pfo_0")
+    #self.pfo = Function(self.V_cg)
+    #self.input_file.read(self.pfo, "pfo_0")
     
     # Flux
     self.q = Function(self.V_cg)
@@ -125,9 +130,9 @@ class SteadyView(object):
     ## Global attributes
     root.title = title
     root.meshtype = 'unstructured'
-    root.institution = 'Jacob Z Downs, UM'
+    root.institution = 'Jacob Z Downs, University of Montana'
     root.source = 'https://github.com/JacobDowns/SheetModel/tree/shmip'
-    root.references = 'Schoof et al. 2012, DOI: 10.1017/jfm.2012.165'
+    root.references = 'Schoof et al. 2012: DOI: 10.1017/jfm.2012.165'
     
     root.close() 
   
@@ -135,4 +140,9 @@ class SteadyView(object):
   # Return spatially averaged pfo
   def avg_pfo(self):
     return assemble(self.pfo * dx(self.mesh)) / assemble(1.0 * dx(self.mesh))
+    
+  
+  # Return the total integrated melt input
+  def total_m(self):
+    return assemble(self.m * dx(self.mesh))
     

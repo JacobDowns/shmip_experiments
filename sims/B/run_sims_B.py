@@ -10,7 +10,7 @@ from dolfin import MPI, mpi_comm_world
 import time
 import numpy as np 
 
-ns = [2]
+ns = [4]
 
 MPI_rank = MPI.rank(mpi_comm_world())
 input_files = ['../../inputs/B/input_B' + str(n) + '.hdf5' for n in ns]
@@ -27,6 +27,7 @@ for n in range(len(ns)):
  
   # Create the sheet model
   model = SheetModel(model_inputs)
+  model.newton_params['newton_solver']['maximum_iterations'] = 25
   
    # Set conductivity
   k = interpolate(Constant(1e-2), model.V_cg)
