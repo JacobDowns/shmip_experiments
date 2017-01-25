@@ -51,6 +51,8 @@ class TimeView(object):
     self.q = Function(self.V_cg)
     # Melt rate
     self.m = Function(self.V_cg)
+    # Pressure as a fraction of overburden
+    self.pfo = Function(self.V_cg)
     
     # Potential at 0 pressure
     phi_m = project(pcs['rho_w'] * pcs['g'] * self.B, self.V_cg)
@@ -77,6 +79,13 @@ class TimeView(object):
     if i < self.num_steps:
       self.input_file.read(self.phi, "phi/vector_" + str(i))
       return self.phi
+
+      
+  # Get pfo at the ith time step
+  def get_pfo(self, i):
+    if i < self.num_steps:
+      self.input_file.read(self.pfo, "pfo/vector_" + str(i))
+      return self.pfo
       
       
   # Get N at the ith time step
@@ -112,6 +121,14 @@ class TimeView(object):
     if i < self.num_steps:
       self.get_h(i)
       return assemble(self.h * dx)
+      
+      
+  # Compute spatially averaged pfo at ith time step
+  def get_avg_pfo(self, i):
+    if i < self.num_steps:
+      self.get_pfo(i)
+      return assemble(self.pfo * dx(self.mesh)) / assemble(1.0 * dx(self.mesh))
+    
     
   
   # Write a netcdf file with the results

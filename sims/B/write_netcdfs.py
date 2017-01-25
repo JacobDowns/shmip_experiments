@@ -11,4 +11,4 @@ for n in ns:
   # Load steady state results file
   view = SteadyView('results_B' + str(n) + '/steady_B' + str(n) + '.hdf5')
   # Write results as netcdf file
-  view.write_netcdf('results_netcdf/B' + str(n), 'Jacob Z Downs, B' + str(n))
+  view.write_netcdf('results_netcdf/B' + str(n) + '_jdow', 'downs_B' + str(n))

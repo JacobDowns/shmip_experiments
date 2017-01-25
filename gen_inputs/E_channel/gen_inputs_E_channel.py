@@ -1,5 +1,5 @@
 """
-Model inputs for intercomparison test E1. 
+Model inputs for intercomparison test E1 - E5. 
 """
 
 from dolfin import *
@@ -11,7 +11,7 @@ from valley import *
 params = [0.05, 0.0, -0.1, -0.5, -0.7]
 
 # Load the valley outline mesh
-mesh = Mesh("../../inputs/mesh/mesh_valley.xml")
+mesh = Mesh("../../inputs/mesh/mesh_valley_channel.xml")
 V_cg = FunctionSpace(mesh, "CG", 1)
 
 # Melt
@@ -36,7 +36,7 @@ ms.mark(boundaries, 1)
 
 ## Write input files
 for n in range(5):
-  out_file = "../../inputs/E/input_E" + str(n + 1) + ".hdf5"
+  out_file = "../../inputs/E_channel/inputs_E" + str(n + 1) + ".hdf5"
   
   bed_param = params[n]  
   f = HDF5File(mesh.mpi_comm(), out_file, 'w')
@@ -56,7 +56,7 @@ for n in range(5):
   class Thickness(Expression):
     def eval(self,value,x):
       bed, thickness = valley(np.array([x[0]]), np.array([x[1]]), bed_param)
-      value[0] = thickness[0] + 0.01
+      value[0] = thickness[0] + 1e-10
   
   # Surface
   H = project(Thickness(degree = 1), V_cg)  
