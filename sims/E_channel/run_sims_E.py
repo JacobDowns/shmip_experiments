@@ -16,7 +16,7 @@ MPI_rank = MPI.rank(mpi_comm_world())
 # Input files 
 input_files = ['../../inputs/E_channel/inputs_E' + str(n) + '.hdf5' for n in ns]
 # Result output directories
-result_dirs = ['resultsB_E_channel' + str(n) for n in ns]
+result_dirs = ['results_serial_E_channel' + str(n) for n in ns]
 
 # Subdomain containing only a single outlet point at terminus
 def outlet_boundary(x, on_boundary):
@@ -44,7 +44,7 @@ for n in range(len(ns)):
   # Seconds per day
   spd = pcs['spd']
   # End time
-  T = 50.0 * spd
+  T = 100.0 * spd
   # Time step
   dt = spd / 12.0
   # Iteration count

@@ -10,7 +10,7 @@ from dolfin import MPI, mpi_comm_world
 import time
 import numpy as np 
 
-ns = [3]
+ns = [1]
 
 MPI_rank = MPI.rank(mpi_comm_world())
 input_file = '../../inputs/C/steady_B5.hdf5'
@@ -30,10 +30,6 @@ for n in range(len(ns)):
   # Create the sheet model
   model = SheetModel(model_inputs)
   model.newton_params['newton_solver']['maximum_iterations'] = 25
-  
-   # Set conductivity
-  k = interpolate(Constant(1e-2), model.V_cg)
-  model.set_k(k)
    
   # Melt
   m = Function(model.V_cg)
@@ -73,10 +69,11 @@ for n in range(len(ns)):
   # Put output for each year in a separate folder
   while day <= 100:
     
-    pvd_dir = result_dirs[n] + '/day' + str(year) + '/'
+    pvd_dir = result_dirs[n] + '/day' + str(day) + '/'
     out_pfo = File(pvd_dir + 'pfo.pvd')
     out_h = File(pvd_dir + 'h.pvd')
     out_N = File(pvd_dir + 'N.pvd')
+    out_m = File(pvd_dir + 'm.pvd')
     
     # Run the model for a year
     while model.t < day * spd:  
@@ -90,12 +87,13 @@ for n in range(len(ns)):
       
       model.step(dt)
       
-      if i % 20 == 0:
+      if i % 6 == 0:
         out_pfo << model.pfo
         out_h << model.h
         out_N << model.N
+        out_m << model.m
         
-      if i % 20 == 0:
+      if i % 6 == 0:
         model.checkpoint(['h', 'phi', 'N', 'm', 'q'])
       
       if MPI_rank == 0: 
@@ -107,7 +105,7 @@ for n in range(len(ns)):
     np.savetxt(result_dirs[n] + '/Time_day' + str(day), np.array([start_time, end_time, end_time - start_time]))
     
     model.write_steady_file(result_dirs[n] + '/day' + str(day))
-    year += 1
+    day += 1
   
 
   model.write_steady_file(result_dirs[n] + '/steady_C' + str(ns[n]))
