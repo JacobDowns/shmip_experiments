@@ -55,7 +55,7 @@ for n in range(len(ns)):
   ### Run the simulation
 
   # End time
-  T = 100.0 * spd
+  T = 80.0 * spd
   # Time step
   dt = 5.0 * 60.0
   # Iteration count
@@ -87,13 +87,13 @@ for n in range(len(ns)):
       
       model.step(dt)
       
-      if i % 6 == 0:
+      if i % 12 == 0:
         out_pfo << model.pfo
         out_h << model.h
         out_N << model.N
         out_m << model.m
         
-      if i % 6 == 0:
+      if i % 12 == 0:
         model.checkpoint(['h', 'phi', 'N', 'm', 'q'])
       
       if MPI_rank == 0: 
