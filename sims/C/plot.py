@@ -9,7 +9,7 @@ from time_view import *
 from pylab import *
 
 # Load hdf5 file
-view = TimeView('results_C1/out.hdf5')
+view = TimeView('results_C4/out.hdf5')
 
 ### Sampe N at points
 
@@ -17,6 +17,7 @@ Ns1 = []
 Ns2 = []
 Ns3 = []
 ts = []
+total_ms = []
 
 for i in range(view.num_steps):
   print i
@@ -26,6 +27,7 @@ for i in range(view.num_steps):
   Ns1.append(N([10.0, 10.00]))
   Ns2.append(N([50.0, 10.00]))
   Ns3.append(N([90.0, 10.00]))
+  total_ms.append(view.get_total_m(i))
   ts.append(t)
   
 ts = array(ts)
@@ -35,18 +37,21 @@ Ns3 = array(Ns3)
 
 #plot(ts, Ns1, 'k')
 
-print Ns2
+subplot(2,1,1)
 
 for i in range((view.num_steps) / 48):
   ns1 = Ns1[i*48:(i+1)*48]
   ns2 = Ns2[i*48:(i+1)*48]
   ns3 = Ns3[i*48:(i+1)*48]
-  plot(ns3, linewidth=0.5)
-  print len(ns2)  
+  plot(ns3, linewidth=0.1)
+  print len(ns1)  
 
-#plot(ts, Ns2, 'r')
-#plot(ts, Ns3, 'b')
-savefig('thing2.png')
+
+subplot(2,1,2)
+plot(array(total_ms)[0:48])
+
+savefig('N1.png', dpi = 650)
+
   
 
   

@@ -19,6 +19,7 @@ class TimeView(object):
     self.mesh = Mesh()
     self.input_file.read(self.mesh, "mesh", False)  
     self.V_cg = FunctionSpace(self.mesh, "CG", 1)
+    self.V_tr = FunctionSpace(self.mesh, FiniteElement("Discontinuous Lagrange Trace", "triangle", 0))
     
     
     # Get the number of time steps
@@ -53,6 +54,8 @@ class TimeView(object):
     self.m = Function(self.V_cg)
     # Pressure as a fraction of overburden
     self.pfo = Function(self.V_cg)
+    # Channel cross sectional area
+    self.S = Function(self.V_tr)
     
     # Potential at 0 pressure
     phi_m = project(pcs['rho_w'] * pcs['g'] * self.B, self.V_cg)
@@ -100,27 +103,41 @@ class TimeView(object):
     if i < self.num_steps:
       self.input_file.read(self.h, "h/vector_" + str(i))
       return self.h
+      
+      
+  # Get S at the ith time step
+  def get_S(self, i):
+    if i < self.num_steps:
+      self.input_file.read(self.S, "S/vector_" + str(i))
+      return self.S
         
   
-  # Get m at the i-th time step
+  # Get m at the ith time step
   def get_m(self, i):
     if i < self.num_steps:
       self.input_file.read(self.m, "m/vector_" + str(i))
       return self.m
+      
+  
+  # Get q at the ith time step
+  def get_q(self, i):
+    if i < self.num_steps:
+      self.input_file.read(self.q, "q/vector_" + str(i))
+      return self.q
         
         
-  # Get the total melt input at the i-th time step
+  # Get the total melt input at the ith time step
   def get_total_m(self, i):
     if i < self.num_steps:
       self.get_m(i)
-      return assemble(self.m * dx)
+      return assemble(self.m * dx(self.mesh))
         
         
-  # Compute the volume of water in the sheet at the i-th time
+  # Compute the volume of water in the sheet at the ith time
   def get_sheet_volume(self, i):
     if i < self.num_steps:
       self.get_h(i)
-      return assemble(self.h * dx)
+      return assemble(self.h * dx(self.mesh))
       
       
   # Compute spatially averaged pfo at ith time step
@@ -133,16 +150,18 @@ class TimeView(object):
   
   # Write a netcdf file with the results
   def write_netcdf(self, out_file, title):
+
     root = Dataset(out_file + '.nc', 'w')
     
     ## Dimensions
     
     # Time
-    root.createDimension('time', 1)
+    root.createDimension('time', None)
     # Spatial dimension of model 
     root.createDimension('dim', 2)
     # Number of nodes in mesh
-    dim = root.createDimension('index1', self.V_cg.dim())
+    root.createDimension('index1', self.V_cg.dim())
+    
     
     ## Variables
     
@@ -150,8 +169,10 @@ class TimeView(object):
     times = root.createVariable('time', 'f8', ('time',))
     times.units = 's'
     times.long_name = 'time'
-    #times[0] = 1.0
     
+    for i in range(self.num_steps):
+      times[i] = self.get_t(i)
+  
     # Node coordinates
     coords1 = root.createVariable('coords1', 'f8', ('dim', 'index1'))
     coords1.units = 'm'
@@ -174,19 +195,30 @@ class TimeView(object):
     N = root.createVariable('N', 'f8', ('time', 'index1',))
     N.units = 'Pa'
     N.long_name = 'effective pressure'
-    N[:] = self.N.vector().array().reshape(1, self.V_cg.dim())
     
     # Sheet thickness
     h = root.createVariable('h', 'f8', ('time', 'index1',))
     h.units = 'm'
     h.long_name = 'water sheet thickness'
-    h[:] = self.h.vector().array().reshape(1, self.V_cg.dim())
     
     # Water sheet discharge
     q = root.createVariable('q', 'f8', ('time', 'index1',))
     q.units = 'm^2/s'
     q.long_name = 'water sheet discharge'
-    q[:] = self.q.vector().array().reshape(1, self.V_cg.dim())
+    
+    
+    ## Write time dependent variables
+    
+    for i in range(self.num_steps):
+      # Get time dependent variables at ith time step
+      self.get_N(i)
+      self.get_h(i)
+      self.get_q(i)
+
+      # Write data to netcdf
+      N[i,:] = self.N.vector().array()
+      h[i,:] = self.h.vector().array()
+      q[i,:] = self.q.vector().array()
     
     ## Global attributes
     root.title = title

@@ -5,7 +5,7 @@ SHMIP E simulations.
 
 from dolfin import *
 from constants import *
-from channel_model import *
+from channel_model_back import *
 from dolfin import MPI, mpi_comm_world
 import time
 import numpy as np 
@@ -16,7 +16,7 @@ MPI_rank = MPI.rank(mpi_comm_world())
 # Input files 
 input_files = ['../../inputs/E_channel/inputs_E' + str(n) + '.hdf5' for n in ns]
 # Result output directories
-result_dirs = ['results_serial_E_channel' + str(n) for n in ns]
+result_dirs = ['results_new_E' + str(n) for n in ns]
 
 # Subdomain containing only a single outlet point at terminus
 def outlet_boundary(x, on_boundary):
@@ -38,15 +38,24 @@ for n in range(len(ns)):
   # Create the sheet model
   model = ChannelModel(model_inputs)
   
+  """
+  f = interpolate(Constant(1.0), model.V_cg)
+  model.d_bcs[0].apply(f.vector())
+  File('f.pvd') << f
+  
+  
+  print model.H.vector().min()
+  quit()"""
+  
     
   ### Run the simulation
   
   # Seconds per day
   spd = pcs['spd']
   # End time
-  T = 100.0 * spd
+  T = 2500.0 * spd
   # Time step
-  dt = spd / 12.0
+  dt = spd / 24.0
   # Iteration count
   i = 0
   
@@ -63,10 +72,10 @@ for n in range(len(ns)):
     
     print ("S", model.S.vector().min(), model.S.vector().max())
     
-    if i % 12 == 0:
-      model.write_pvds(['pfo', 'h', 'N'])
+    if i % 24 == 0:
+      model.write_pvds(['h', 'N'])
       
-    if i % 12 == 0:
+    if i % 24 == 0:
       model.checkpoint(['h', 'phi', 'N', 'q'])
     
     if MPI_rank == 0: 
