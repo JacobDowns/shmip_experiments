@@ -69,12 +69,12 @@ for n in range(len(ns)):
   i = 0
   # Time the run  
   start_time = time.time()
-  # Number of years
+  # Current years
   year = 1
   
 
   # Put output for each year in a separate folder
-  while year <= 20:
+  while year <= 24:
     
     pvd_dir = result_dirs[n] + '/year' + str(year) + '/'
     out_pfo = File(pvd_dir + 'pfo.pvd')

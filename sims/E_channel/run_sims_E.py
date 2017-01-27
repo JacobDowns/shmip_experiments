@@ -16,7 +16,7 @@ MPI_rank = MPI.rank(mpi_comm_world())
 # Input files 
 input_files = ['../../inputs/E_channel/inputs_E' + str(n) + '.hdf5' for n in ns]
 # Result output directories
-result_dirs = ['results_new_E' + str(n) for n in ns]
+result_dirs = ['results_no_pi' + str(n) for n in ns]
 
 # Subdomain containing only a single outlet point at terminus
 def outlet_boundary(x, on_boundary):
@@ -34,6 +34,7 @@ for n in range(len(ns)):
   model_inputs['constants'] = pcs
   # Point boundary condition at the outlet
   model_inputs['point_bc'] = outlet_boundary
+  model_inputs['use_pi'] = False
   
   # Create the sheet model
   model = ChannelModel(model_inputs)
@@ -55,7 +56,7 @@ for n in range(len(ns)):
   # End time
   T = 2500.0 * spd
   # Time step
-  dt = spd / 24.0
+  dt = spd / 12.0
   # Iteration count
   i = 0
   
@@ -72,10 +73,10 @@ for n in range(len(ns)):
     
     print ("S", model.S.vector().min(), model.S.vector().max())
     
-    if i % 24 == 0:
+    if i % 12 == 0:
       model.write_pvds(['h', 'N'])
       
-    if i % 24 == 0:
+    if i % 12 == 0:
       model.checkpoint(['h', 'phi', 'N', 'q'])
     
     if MPI_rank == 0: 
