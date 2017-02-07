@@ -4,20 +4,17 @@ SHMIP A simulations.
 """
 
 from dolfin import *
-from constants import *
-from sheet_model import *
+from sim_constants import *
+from channel_model_back import *
 from dolfin import MPI, mpi_comm_world
 import time
 import numpy as np 
 
-ns = [1,2,3,4,5,6]
+ns = [5]
 
 MPI_rank = MPI.rank(mpi_comm_world())
-input_files = ['../../inputs/A/input_A' + str(n) + '.hdf5' for n in ns]
+input_files = ['../../inputs/A_channel/inputs_A' + str(n) + '.hdf5' for n in ns]
 result_dirs = ['results_A' + str(n) for n in ns]
-
-# Conductivities for each run
-ks = [5e-3, 5e-3, 5e-3, 5e-3, 1e-2, 1e-2]
 
 for n in range(len(ns)):
   
@@ -25,24 +22,22 @@ for n in range(len(ns)):
   
   model_inputs = {}
   model_inputs['input_file'] = input_files[n]
-  model_inputs['out_dir'] = result_dirs[n]
-  model_inputs['constants'] = pcs
-
-  # Create the sheet model
-  model = SheetModel(model_inputs)
+  model_inputs['out_dir'] = result_dirs[n] 
+  model_inputs['constants'] = sim_constants
   
-  # Set conductivity
-  k = interpolate(Constant(ks[ns[n] - 1]), model.V_cg)
-  model.set_k(k)
+  # Create the sheet model
+  model = ChannelModel(model_inputs)
+  
+
 
   ### Run the simulation
   
   # Seconds per day
   spd = pcs['spd']
   # End time
-  T = 1500.0 * spd
+  T = 5000.0 * spd
   # Time step
-  dt = spd / 4.0
+  dt = spd / 6.0
   # Iteration count
   i = 0
   
@@ -55,12 +50,13 @@ for n in range(len(ns)):
       print 'Current time: ' + str(current_time)
     
     model.step(dt)
+    print ("S", model.S.vector().min(), model.S.vector().max())
     
-    if i % 8 == 0:
+    if i % 6 == 0:
       model.write_pvds(['pfo', 'h'])
       
-    if i % 4 == 0:
-      model.checkpoint(['h', 'phi', 'N'])
+    if i % 6 == 0:
+      model.checkpoint(['h', 'phi', 'N', 'q'])
     
     if MPI_rank == 0: 
       print

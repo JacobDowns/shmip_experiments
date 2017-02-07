@@ -10,7 +10,7 @@ def valley_outline():
 	'''
 	# domain length
 	xend = 6.0e3
-	step=10.0
+	step=20.0
 	x = np.arange(0,xend+step,step)
 
 	# surf para

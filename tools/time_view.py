@@ -56,6 +56,18 @@ class TimeView(object):
     self.pfo = Function(self.V_cg)
     # Channel cross sectional area
     self.S = Function(self.V_tr)
+    # Xi
+    self.Pi = Function(self.V_tr)
+    # Derivative of pressure along edges
+    self.dpw_ds = Function(self.V_tr)
+    # Derivative of phi along edges
+    self.dphi_ds = Function(self.V_tr)
+    # f
+    self.f = Function(self.V_tr)
+    # q_c
+    self.q_c = Function(self.V_tr)
+    # Channel flux
+    self.Q = Function(self.V_tr)
     
     # Potential at 0 pressure
     phi_m = project(pcs['rho_w'] * pcs['g'] * self.B, self.V_cg)
@@ -69,8 +81,50 @@ class TimeView(object):
     self.coords_x = self.coords[:,0]
     self.coords_y = self.coords[:,1]
     
+  
+  # Get Pi at the ith time step
+  def get_Pi(self, i):
+    if i < self.num_steps:
+      self.input_file.read(self.Pi, "Pi/vector_" + str(i))
+      return self.Pi
+      
+  
+  # Get Q at the ith time step
+  def get_Q(self, i):
+    if i < self.num_steps:
+      self.input_file.read(self.Q, "Q/vector_" + str(i))
+      return self.Q
+      
+      
+  # Get dpw_ds at the ith time step
+  def get_dpw_ds(self, i):
+    if i < self.num_steps:
+      self.input_file.read(self.dpw_ds, "dpw_ds/vector_" + str(i))
+      return self.dpw_ds
+
+      
+  # Get dpw_ds at the ith time step
+  def get_dphi_ds(self, i):
+    if i < self.num_steps:
+      self.input_file.read(self.dphi_ds, "dphi_ds/vector_" + str(i))
+      return self.dphi_ds
+      
+      
+  # Get f at the ith time step
+  def get_f(self, i):
+    if i < self.num_steps:
+      self.input_file.read(self.f, "f/vector_" + str(i))
+      return self.f
+
+      
+  # Get q_c at the ith time step
+  def get_q_c(self, i):
+    if i < self.num_steps:
+      self.input_file.read(self.q_c, "q_c/vector_" + str(i))
+      return self.q_c
+
     
-    # Get ith time step
+  # Get ith time step
   def get_t(self, i):
     if i < self.num_steps:
       attr = self.input_file.attributes("h/vector_" + str(i))
@@ -149,7 +203,7 @@ class TimeView(object):
     
   
   # Write a netcdf file with the results
-  def write_netcdf(self, out_file, title):
+  def write_netcdf(self, out_file, title, steps = 10):
 
     root = Dataset(out_file + '.nc', 'w')
     
@@ -209,7 +263,7 @@ class TimeView(object):
     
     ## Write time dependent variables
     
-    for i in range(self.num_steps):
+    for i in range(self.num_steps - steps, self.num_steps):
       # Get time dependent variables at ith time step
       self.get_N(i)
       self.get_h(i)

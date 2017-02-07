@@ -61,7 +61,7 @@ def NCtest(NCFile):
 
 	# }}}
 	# {{{ treating the dimensions
-	ischannelonedge=getattr(DatFile,'channels_on_edges')
+	ischannelonedge=False #getattr(DatFile,'channels_on_edges')
 	meshtype=getattr(DatFile,'meshtype')
 	meshdim=0
 	indexpool={'index1':'number of nodes',

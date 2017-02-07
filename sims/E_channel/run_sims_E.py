@@ -15,8 +15,9 @@ ns = [1]
 MPI_rank = MPI.rank(mpi_comm_world())
 # Input files 
 input_files = ['../../inputs/E_channel/inputs_E' + str(n) + '.hdf5' for n in ns]
+
 # Result output directories
-result_dirs = ['results_no_pi' + str(n) for n in ns]
+result_dirs = ['results_parallel_f0' + str(n) for n in ns]
 
 # Subdomain containing only a single outlet point at terminus
 def outlet_boundary(x, on_boundary):
@@ -29,32 +30,22 @@ for n in range(len(ns)):
   
   ### Setup the model  
   model_inputs = {}
-  model_inputs['input_file'] = input_files[n]
-  model_inputs['out_dir'] = result_dirs[n]
+  model_inputs['input_file'] = input_files[n] # 'results_E1/steady_E_channel1.hdf5'
+  model_inputs['out_dir'] = result_dirs[n] #'results_alt1_continue_E1' #r
   model_inputs['constants'] = pcs
+  #model_inputs['use_pi'] = False
   # Point boundary condition at the outlet
   model_inputs['point_bc'] = outlet_boundary
-  model_inputs['use_pi'] = False
-  
   # Create the sheet model
   model = ChannelModel(model_inputs)
   
-  """
-  f = interpolate(Constant(1.0), model.V_cg)
-  model.d_bcs[0].apply(f.vector())
-  File('f.pvd') << f
-  
-  
-  print model.H.vector().min()
-  quit()"""
-  
-    
+
   ### Run the simulation
   
   # Seconds per day
   spd = pcs['spd']
   # End time
-  T = 2500.0 * spd
+  T = 20000.0 * spd
   # Time step
   dt = spd / 12.0
   # Iteration count
@@ -73,14 +64,17 @@ for n in range(len(ns)):
     
     print ("S", model.S.vector().min(), model.S.vector().max())
     
-    if i % 12 == 0:
+    if i % (12 * 25) == 0:
       model.write_pvds(['h', 'N'])
       
-    if i % 12 == 0:
-      model.checkpoint(['h', 'phi', 'N', 'q'])
+    if i % (12 * 25) == 0:
+      model.checkpoint(['h', 'phi', 'S', 'N', 'q', 'Pi', 'Q', 'dpw_ds', 'f', 'q_c', 'dphi_ds'])
     
     if MPI_rank == 0: 
       print
+      
+    if i % (12 * 365) == 0 and i > 0:
+      model.write_steady_file(result_dirs[n] + '/steady_year_' + str(int(i / (12. * 365.))))
       
     i += 1
     

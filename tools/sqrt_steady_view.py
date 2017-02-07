@@ -59,10 +59,3 @@ class SqrtSteadyView(SteadyView):
   # Width integrate q
   def width_integrate_q(self):
     return self.width_integrate(self.q)
-    
-  
-  # Length integrate q
-    
-  
-  # Average 
-    

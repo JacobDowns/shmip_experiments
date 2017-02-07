@@ -10,7 +10,7 @@ from dolfin import MPI, mpi_comm_world
 import time
 import numpy as np 
 
-ns = [1]
+ns = range(1,5)
 
 MPI_rank = MPI.rank(mpi_comm_world())
 input_file = '../../inputs/C/steady_B5.hdf5'
@@ -41,6 +41,7 @@ for n in range(len(ns)):
   ra = ras[ns[n] - 1]
   # Seconds per day
   spd = pcs['spd']
+  
   # Moulin input
   moulin_in = Function(model.V_cg)
   moulin_in.vector().set_local(model.m.vector().array() - runoff_basal)
@@ -54,8 +55,6 @@ for n in range(len(ns)):
 
   ### Run the simulation
 
-  # End time
-  T = 80.0 * spd
   # Time step
   dt = 10.0 * 60.0
   # Iteration count
@@ -87,6 +86,7 @@ for n in range(len(ns)):
       
       model.step(dt)
       
+      # Write output every hour
       if i % 6 == 0:
         out_pfo << model.pfo
         out_h << model.h

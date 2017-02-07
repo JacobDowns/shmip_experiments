@@ -21,7 +21,8 @@ for i in range(len(xs)):
   
 # Create the mesh
 domain = Polygon(points)
-mesh = generate_mesh(domain, 80) 
+mesh = generate_mesh(domain, 100) 
 File('mesh_valley_channel.xml') << mesh
+File('mesh_valley_channel.pvd') << mesh
 
 

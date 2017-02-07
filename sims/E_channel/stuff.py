@@ -9,8 +9,8 @@ from time_view import *
 from tr_plot import *
 import numpy as np
 
-view1 = TimeView('results_sdt1_E1/out.hdf5')
-view2 = TimeView('results_sdt_E1/out.hdf5')
+view1 = TimeView('results_parallel_dt481/out.hdf5')
+view2 = TimeView('results_parallel_dt601/out.hdf5')
 
 p = TRPlot(view1.mesh)
 

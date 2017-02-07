@@ -8,6 +8,8 @@ Created on Wed Jan 18 10:23:56 2017
 from time_view import *
 from pylab import *
 
+for i in range(1,5)
+
 # Load hdf5 file
 view = TimeView('results_C4/out.hdf5')
 

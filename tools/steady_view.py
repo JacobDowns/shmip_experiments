@@ -89,7 +89,7 @@ class SteadyView(object):
     times = root.createVariable('time', 'f8', ('time',))
     times.units = 's'
     times.long_name = 'time'
-    #times[0] = 1.0
+    times[0] = 1.0
     
     # Node coordinates
     coords1 = root.createVariable('coords1', 'f8', ('dim', 'index1'))

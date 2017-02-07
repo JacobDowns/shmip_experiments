@@ -23,6 +23,7 @@ k = interpolate(Constant(5e-3), V_cg)
 
 h = interpolate(Constant(0.01), V_cg)
 
+
 # Margin boundary 
 
 class MarginSub(SubDomain):
@@ -56,7 +57,7 @@ for n in range(5):
   class Thickness(Expression):
     def eval(self,value,x):
       bed, thickness = valley(np.array([x[0]]), np.array([x[1]]), bed_param)
-      value[0] = thickness[0] + 1e-10
+      value[0] = thickness[0]
   
   # Surface
   H = project(Thickness(degree = 1), V_cg)  
