@@ -56,7 +56,7 @@ for n in range(5):
   class Thickness(Expression):
     def eval(self,value,x):
       bed, thickness = valley(np.array([x[0]]), np.array([x[1]]), bed_param)
-      value[0] = thickness[0] + 0.01
+      value[0] = thickness[0]
   
   # Surface
   H = project(Thickness(degree = 1), V_cg)  
@@ -64,9 +64,6 @@ for n in range(5):
   # Bed elevation
   B = project(Bed(degree = 1), V_cg)
   f.write(B, "B")
-  
-  File('B' + str(n) + '.pvd') << B
-  File('H' + str(n) + '.pvd') << H
   
   # Potential at 0 pressure
   phi_m = project(pcs['rho_w'] * pcs['g'] * B, V_cg)

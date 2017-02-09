@@ -10,8 +10,7 @@ from dolfin import MPI, mpi_comm_world
 import time
 import numpy as np 
 
-#ns = range(1,6)
-ns = [5]
+ns = [1]
 
 MPI_rank = MPI.rank(mpi_comm_world())
 # Input files 
@@ -38,9 +37,6 @@ for n in range(len(ns)):
   
   # Create the sheet model
   model = SheetModel(model_inputs)
-  
-  #f = interpolate(Constant(1.0), model.V_cg)
-  #model.d_bcs[0].apply(f.vector())
   
     
   ### Run the simulation

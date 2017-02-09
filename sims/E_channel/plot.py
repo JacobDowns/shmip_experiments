@@ -9,27 +9,28 @@ from time_view import *
 from tr_plot import *
 import numpy as np
 
-view = TimeView('results_1/out.hdf5')
+view = TimeView('serial_continue_test/out.hdf5')
+out_dir = 'plot2'
 p = TRPlot(view.mesh)
 
-out_S = File('plot/S.pvd')
-out_Pi = File('plot/Pi.pvd')
-out_dpw_ds = File('plot/dpw_ds.pvd')
-out_dphi_ds = File('plot/dphi_ds.pvd')
-out_q_c = File('plot/q_c.pvd')
-out_f = File('plot/f.pvd')
-out_Q = File('plot/Q.pvd')
-out_q = File('plot/q.pvd')
-out_phi = File('plot/phi.pvd')
+out_S = File(out_dir + '/S.pvd')
+out_Pi = File(out_dir + '/Pi.pvd')
+out_dpw_ds = File(out_dir + '/dpw_ds.pvd')
+out_dphi_ds = File(out_dir + '/dphi_ds.pvd')
+out_q_c = File(out_dir + '/q_c.pvd')
+out_f = File(out_dir + '/f.pvd')
+out_Q = File(out_dir + '/Q.pvd')
+out_q = File(out_dir + '/q.pvd')
+out_phi = File(out_dir + '/phi.pvd')
 
 ff = FacetFunctionDouble(view.mesh)
 
 
-for i in range(view.num_steps):
+for i in range(0, view.num_steps, 1):
   print i
   p.copy_tr_to_facet(view.get_S(i), ff)
   out_S << ff
-  p.copy_tr_to_facet(view.get_dpw_ds(i), ff)
+  """p.copy_tr_to_facet(view.get_dpw_ds(i), ff)
   out_dpw_ds << ff
   #p.copy_tr_to_facet(view.get_dphi_ds(i), ff)
   #out_dphi_ds << ff
@@ -43,5 +44,5 @@ for i in range(view.num_steps):
   out_Q << ff
   
   out_q << view.get_q(i)
-  out_phi << view.get_phi(i)
+  out_phi << view.get_phi(i)"""
   

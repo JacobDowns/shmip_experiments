@@ -203,7 +203,9 @@ class TimeView(object):
     
   
   # Write a netcdf file with the results
-  def write_netcdf(self, out_file, title, steps = 10):
+  def write_netcdf(self, out_file, title, steps = None):
+    if steps is None:
+      steps = self.num_steps   
 
     root = Dataset(out_file + '.nc', 'w')
     
@@ -224,8 +226,11 @@ class TimeView(object):
     times.units = 's'
     times.long_name = 'time'
     
-    for i in range(self.num_steps):
-      times[i] = self.get_t(i)
+    start_index = self.num_steps - steps
+    
+    for i in range(steps):
+      index = start_index + i
+      times[i] = self.get_t(index) - self.get_t(start_index)
   
     # Node coordinates
     coords1 = root.createVariable('coords1', 'f8', ('dim', 'index1'))
@@ -263,11 +268,13 @@ class TimeView(object):
     
     ## Write time dependent variables
     
-    for i in range(self.num_steps - steps, self.num_steps):
+    for i in range(steps):
+      index = start_index + i
+      
       # Get time dependent variables at ith time step
-      self.get_N(i)
-      self.get_h(i)
-      self.get_q(i)
+      self.get_N(index)
+      self.get_h(index)
+      self.get_q(index)
 
       # Write data to netcdf
       N[i,:] = self.N.vector().array()

@@ -14,10 +14,10 @@ ns = [1]
 
 MPI_rank = MPI.rank(mpi_comm_world())
 # Input files 
-input_files = ['../../inputs/E_channel/inputs_E' + str(n) + '.hdf5' for n in ns]
+#input_files = ['../../inputs/E_channel/inputs_E' + str(n) + '.hdf5' for n in ns]
 
 # Result output directories
-result_dirs = ['results_parallel_f0' + str(n) for n in ns]
+#result_dirs = ['results_serial_continue' + str(n) for n in ns]
 
 # Subdomain containing only a single outlet point at terminus
 def outlet_boundary(x, on_boundary):
@@ -30,8 +30,8 @@ for n in range(len(ns)):
   
   ### Setup the model  
   model_inputs = {}
-  model_inputs['input_file'] = input_files[n] # 'results_E1/steady_E_channel1.hdf5'
-  model_inputs['out_dir'] = result_dirs[n] #'results_alt1_continue_E1' #r
+  model_inputs['input_file'] = 'results_serial1/steady_E_channel1.hdf5' #input_files[n] # 'results_E1/steady_E_channel1.hdf5'
+  model_inputs['out_dir'] = 'serial_continue_test' #result_dirs[n] #'results_alt1_continue_E1' #r
   model_inputs['constants'] = pcs
   #model_inputs['use_pi'] = False
   # Point boundary condition at the outlet
@@ -45,7 +45,7 @@ for n in range(len(ns)):
   # Seconds per day
   spd = pcs['spd']
   # End time
-  T = 20000.0 * spd
+  T = 10000.0 * spd
   # Time step
   dt = spd / 12.0
   # Iteration count

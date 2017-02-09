@@ -1,6 +1,5 @@
 from dolfin import *
 from mshr import *
-#import numpy as np
 from valley_outline import *
 from pylab import *
 from mshr import *
@@ -21,8 +20,8 @@ for i in range(len(xs)):
   
 # Create the mesh
 domain = Polygon(points)
-mesh = generate_mesh(domain, 100) 
-File('mesh_valley_channel.xml') << mesh
-File('mesh_valley_channel.pvd') << mesh
+mesh = generate_mesh(domain, 125) 
+File('mesh_valley.xml') << mesh
+File('mesh_valley.pvd') << mesh
 
 
