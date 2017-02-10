@@ -5,7 +5,7 @@ Write results as netcdf files
 
 from time_view import *
 
-ns = [2]
+ns = [1,2,3,4]
 
 for n in ns:
   # Load steady state results file

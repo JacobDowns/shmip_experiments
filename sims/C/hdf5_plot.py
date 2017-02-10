@@ -53,15 +53,19 @@ for j in [1,2,3,4]:
   for i in range(1, (view.num_steps) / 24):
     ns1_1 = Ns1[i*24:(i+1)*24]
     ns1_0 = Ns1[(i-1)*24:i*24]
-    max1.append(np.abs(ns1_1 - ns1_0).max())
+    #max1.append(np.abs(ns1_1 - ns1_0).max())
+    max1.append(max( abs((ns1_0 - ns1_1) / ns1_0) ))
+    
     
     ns2_1 = Ns2[i*24:(i+1)*24]
     ns2_0 = Ns2[(i-1)*24:i*24]
-    max2.append(np.abs(ns2_1 - ns2_0).max())
+    #max2.append(np.abs(ns2_1 - ns2_0).max())
+    max2.append(max( abs((ns2_0 - ns2_1) / ns2_0) ))
     
     ns3_1 = Ns3[i*24:(i+1)*24]
     ns3_0 = Ns3[(i-1)*24:i*24]
-    max3.append(np.abs(ns3_1 - ns3_0).max())
+    #max3.append(np.abs(ns3_1 - ns3_0).max())
+    max3.append(max( abs((ns3_0 - ns3_1) / ns3_0) ))
     
   plt1.plot(max1, 'ko-', ms = 2)
   plt2.plot(max2, 'ko-', ms = 2)

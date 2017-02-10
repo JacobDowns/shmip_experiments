@@ -231,9 +231,6 @@ class TimeView(object):
     for i in range(steps):
       index = start_index + i
       times[i] = self.get_t(index)
-      
-    print self.get_t(0)
-    quit()
   
     # Node coordinates
     coords1 = root.createVariable('coords1', 'f8', ('dim', 'index1'))

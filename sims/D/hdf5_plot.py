@@ -53,21 +53,24 @@ for j in [1]:
   for i in range(1, (view.num_steps) / 365):
     ns1_1 = Ns1[i*365:(i+1)*365]
     ns1_0 = Ns1[(i-1)*365:i*365]
-    dif1 = np.abs(ns1_0 - ns1_1)
-    index1 = dif1.argmax()
-    max1.append(dif1[index1] / max(abs(ns1_0[index1]), abs(ns1_1[index1])))
+    #dif1 = np.abs(ns1_0 - ns1_1)
+    #index1 = dif1.argmax()
+    #max1.append(dif1[index1] / max(abs(ns1_0[index1]), abs(ns1_1[index1])))
+    max1.append(max( abs((ns1_0 - ns1_1) / ns1_0) ))
     
     ns2_1 = Ns2[i*365:(i+1)*365]
     ns2_0 = Ns2[(i-1)*365:i*365]
-    dif2 = np.abs(ns2_0 - ns2_1)
-    index2 = dif2.argmax()
-    max2.append(dif2[index2] / max(abs(ns2_0[index2]), abs(ns2_1[index2])))
+    #dif2 = np.abs(ns2_0 - ns2_1)
+    #index2 = dif2.argmax()
+    #max2.append(dif2[index2] / max(abs(ns2_0[index2]), abs(ns2_1[index2])))
+    max2.append(max( abs((ns2_0 - ns2_1) / ns2_0) ))
     
     ns3_1 = Ns3[i*365:(i+1)*365]
     ns3_0 = Ns3[(i-1)*365:i*365]
-    dif3 = np.abs(ns3_0 - ns3_1)
-    index3 = dif3.argmax()
-    max3.append(dif3[index3] / max(abs(ns3_0[index2]), abs(ns3_1[index2])))
+    #dif3 = np.abs(ns3_0 - ns3_1)
+    #index3 = dif3.argmax()
+    #max3.append(dif3[index3] / max(abs(ns3_0[index2]), abs(ns3_1[index2])))
+    max3.append(max( abs((ns3_0 - ns3_1) / ns3_0) ))
     
   plt1.plot(max1, 'ko-', ms = 2)
   plt2.plot(max2, 'ko-', ms = 2)

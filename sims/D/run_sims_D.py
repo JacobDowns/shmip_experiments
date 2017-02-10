@@ -10,7 +10,7 @@ from dolfin import MPI, mpi_comm_world
 import time
 import numpy as np 
 
-ns = [3]
+ns = [1]
 
 MPI_rank = MPI.rank(mpi_comm_world())
 # Input file is steady state from A1
@@ -37,7 +37,6 @@ for n in range(len(ns)):
   model_inputs['input_file'] = input_file
   model_inputs['out_dir'] = result_dirs[n]
   model_inputs['constants'] = pcs
-  model_inputs['checkpoint_file'] = 'out1'
 
   # Create the sheet model
   model = SheetModel(model_inputs)
@@ -64,7 +63,7 @@ for n in range(len(ns)):
   # Seconds per year
   spy = pcs['spy']
   # Time step
-  dt = spd / 24.0
+  dt = spd / 20.0
   # Iteration count
   i = 0
   # Time the run  
@@ -74,7 +73,7 @@ for n in range(len(ns)):
   
 
   # Put output for each year in a separate folder
-  while year <= 24:
+  while year <= 30:
     
     pvd_dir = result_dirs[n] + '/year' + str(year) + '/'
     out_pfo = File(pvd_dir + 'pfo.pvd')
@@ -90,16 +89,16 @@ for n in range(len(ns)):
       # Update melt
       update_m(model.t)
       model.set_m(m)
-      
-      model.step(dt)
-      
-      if i % 24 == 0:
+        
+      if i % 20 == 0:
+        model.checkpoint(['h', 'phi', 'N', 'm', 'q'])
+        
+      if i % (20*5) == 0:
         out_pfo << model.pfo
         out_h << model.h
         out_N << model.N
-        
-      if i % 24 == 0:
-        model.checkpoint(['h', 'phi', 'N', 'm', 'q'])
+              
+      model.step(dt)
       
       if MPI_rank == 0: 
         print
