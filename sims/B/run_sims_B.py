@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-SHMIP A simulations. 
+SHMIP B simulations. 
 """
 
 from dolfin import *
@@ -10,7 +10,7 @@ from dolfin import MPI, mpi_comm_world
 import time
 import numpy as np 
 
-ns = [4]
+ns = [1,2,3,4,5]
 
 MPI_rank = MPI.rank(mpi_comm_world())
 input_files = ['../../inputs/B/input_B' + str(n) + '.hdf5' for n in ns]

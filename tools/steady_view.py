@@ -71,7 +71,7 @@ class SteadyView(object):
     
   
   # Write a netcdf file with the results
-  def write_netcdf(self, out_file, title):
+  def write_netcdf(self, out_file, title, end_time = 1.0):
     root = Dataset(out_file + '.nc', 'w')
     
     ## Dimensions
@@ -89,7 +89,9 @@ class SteadyView(object):
     times = root.createVariable('time', 'f8', ('time',))
     times.units = 's'
     times.long_name = 'time'
-    times[0] = 1.0
+    times[0] = end_time
+    
+    print end_time
     
     # Node coordinates
     coords1 = root.createVariable('coords1', 'f8', ('dim', 'index1'))

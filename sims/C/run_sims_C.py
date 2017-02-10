@@ -56,7 +56,7 @@ for n in range(len(ns)):
   ### Run the simulation
 
   # Time step
-  dt = 10.0 * 60.0
+  dt = 6.0 * 60.0
   # Iteration count
   i = 0
   # Day
@@ -73,12 +73,20 @@ for n in range(len(ns)):
     out_h = File(pvd_dir + 'h.pvd')
     out_N = File(pvd_dir + 'N.pvd')
     out_m = File(pvd_dir + 'm.pvd')
-    
-    # Run the model for a year
+      
+    # Run the model for a day
     while model.t < day * spd:  
       if MPI_rank == 0: 
         current_time = model.t / spd
         print 'Current time: ' + str(current_time)
+        
+      # Write output every hour
+      if i % 10 == 0:
+        out_pfo << model.pfo
+        out_h << model.h
+        out_N << model.N
+        out_m << model.m
+        model.checkpoint(['h', 'phi', 'N', 'm', 'q'])        
         
       # Update melt
       update_m(model.t)
@@ -86,15 +94,7 @@ for n in range(len(ns)):
       
       model.step(dt)
       
-      # Write output every hour
-      if i % 6 == 0:
-        out_pfo << model.pfo
-        out_h << model.h
-        out_N << model.N
-        out_m << model.m
-        
-      if i % 6 == 0:
-        model.checkpoint(['h', 'phi', 'N', 'm', 'q'])
+
       
       if MPI_rank == 0: 
         print

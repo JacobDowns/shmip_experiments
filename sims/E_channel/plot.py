@@ -9,8 +9,8 @@ from time_view import *
 from tr_plot import *
 import numpy as np
 
-view = TimeView('serial_continue_test/out.hdf5')
-out_dir = 'plot2'
+view = TimeView('results_E1/out.hdf5')
+out_dir = 'plot'
 p = TRPlot(view.mesh)
 
 out_S = File(out_dir + '/S.pvd')
