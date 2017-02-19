@@ -9,8 +9,8 @@ from time_view import *
 from tr_plot import *
 import numpy as np
 
-view = TimeView('results_E1/out.hdf5')
-out_dir = 'plot'
+view = TimeView('results_scipy_E1/out.hdf5')
+out_dir = 'plot_scipy'
 p = TRPlot(view.mesh)
 
 out_S = File(out_dir + '/S.pvd')

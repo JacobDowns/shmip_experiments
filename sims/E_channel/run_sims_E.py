@@ -5,18 +5,18 @@ SHMIP E simulations.
 
 from dolfin import *
 from constants import *
-from channel_model_back import *
+from channel_model import *
 from dolfin import MPI, mpi_comm_world
 import time
 import numpy as np 
 
-ns = [3]
+ns = [1]
 
 MPI_rank = MPI.rank(mpi_comm_world())
 # Input files 
 input_files = ['../../inputs/E_channel/inputs_E' + str(n) + '.hdf5' for n in ns]
 # Result output directories
-result_dirs = ['results_E' + str(n) for n in ns]
+result_dirs = ['results_scipy_E' + str(n) for n in ns]
 
 # Subdomain containing only a single outlet point at terminus
 def outlet_boundary(x, on_boundary):
@@ -46,7 +46,7 @@ for n in range(len(ns)):
   # End time
   T = 1000.0 * spd
   # Time step
-  dt = spd / 64.0
+  dt = spd / 24.0
   # Iteration count
   i = 0
   
@@ -63,16 +63,16 @@ for n in range(len(ns)):
     
     print ("S", model.S.vector().min(), model.S.vector().max())
     
-    if i % 64 == 0:
+    if i % 24 == 0:
       model.write_pvds(['h', 'N'])
       
-    if i % 64 == 0:
+    if i % 24 == 0:
       model.checkpoint(['h', 'phi', 'S', 'N', 'q', 'Pi', 'Q', 'dpw_ds', 'f', 'q_c', 'dphi_ds'])
     
     if MPI_rank == 0: 
       print
       
-    if i % (64*365) == 0 and i > 0:
+    if i % (24*365) == 0 and i > 0:
       model.write_steady_file(result_dirs[n] + '/steady_year_' + str(int(i / (16. * 365.))))
       
     i += 1

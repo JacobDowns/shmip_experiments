@@ -15,7 +15,6 @@ ns = [1]
 MPI_rank = MPI.rank(mpi_comm_world())
 # Input file is steady state from A1
 input_file = '../../inputs/D/steady_A1.hdf5'
-#input_file = 'results_D1/year7.hdf5'
 # Result output directories
 result_dirs = ['results_D' + str(n) for n in ns]
 
