@@ -20,8 +20,7 @@ for j in [2]:
   ts = []
   total_ms = []
   
-  for i in range(view.num_steps):
-    
+  for i in range(view.num_steps - 2*365, view.num_steps):
     print i
     N = view.get_N(i)
     t = view.get_t(i)
@@ -50,31 +49,25 @@ for j in [2]:
   max2 = []
   max3 = []
   
-  for i in range(1, (view.num_steps) / 365):
-    ns1_1 = Ns1[i*365:(i+1)*365]
-    ns1_0 = Ns1[(i-1)*365:i*365]
-    #dif1 = np.abs(ns1_0 - ns1_1)
-    #index1 = dif1.argmax()
-    #max1.append(dif1[index1] / max(abs(ns1_0[index1]), abs(ns1_1[index1])))
-    max1.append(max( abs((ns1_0 - ns1_1) / ns1_0) ))
-    
-    ns2_1 = Ns2[i*365:(i+1)*365]
-    ns2_0 = Ns2[(i-1)*365:i*365]
-    #dif2 = np.abs(ns2_0 - ns2_1)
-    #index2 = dif2.argmax()
-    #max2.append(dif2[index2] / max(abs(ns2_0[index2]), abs(ns2_1[index2])))
-    max2.append(max( abs((ns2_0 - ns2_1) / ns2_0) ))
-    
-    ns3_1 = Ns3[i*365:(i+1)*365]
-    ns3_0 = Ns3[(i-1)*365:i*365]
-    #dif3 = np.abs(ns3_0 - ns3_1)
-    #index3 = dif3.argmax()
-    #max3.append(dif3[index3] / max(abs(ns3_0[index2]), abs(ns3_1[index2])))
-    max3.append(max( abs((ns3_0 - ns3_1) / ns3_0) ))
-    
-  plt1.plot(max1, 'ko-', ms = 2)
-  plt2.plot(max2, 'ko-', ms = 2)
-  plt3.plot(max3, 'ko-', ms = 2)
+  Ns1_0 = Ns1[0:365]
+  Ns1_1 = Ns1[365:]
+  
+  Ns2_0 = Ns2[0:365]
+  Ns2_1 = Ns2[365:]
+  
+  Ns3_0 = Ns3[0:365]
+  Ns3_1 = Ns3[365:]
+  
+  plt1.plot(Ns1_0, 'r')
+  plt1.plot(Ns1_1, 'g')
+  plt2.plot(Ns2_0, 'r')
+  plt2.plot(Ns2_1, 'g')
+  plt3.plot(Ns3_0, 'g')
+  plt3.plot(Ns3_1, 'g')
+  
+  #plt1.plot(np.abs(Ns1_0 - Ns1_1) / abs(Ns1_0), 'ko-', ms = 2)
+  #plt2.plot(np.abs(Ns2_0 - Ns2_1) / abs(Ns1_0), 'ko-', ms = 2)
+  #plt3.plot(np.abs(Ns3_0 - Ns3_1) / abs(Ns1_0), 'ko-', ms = 2)
   
   
   savefig('images/N_comp' + str(j) + '.png', dpi = 650)

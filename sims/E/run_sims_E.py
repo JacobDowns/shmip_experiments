@@ -16,7 +16,7 @@ MPI_rank = MPI.rank(mpi_comm_world())
 # Input files 
 input_files = ['../../inputs/E/input_E' + str(n) + '.hdf5' for n in ns]
 # Result output directories
-result_dirs = ['results_E_be' + str(n) for n in ns]
+result_dirs = ['results_E_new' + str(n) for n in ns]
 
 # Subdomain containing only a single outlet point at terminus
 def outlet_boundary(x, on_boundary):
@@ -44,9 +44,9 @@ for n in range(len(ns)):
   # Seconds per day
   spd = pcs['spd']
   # End time
-  T = 2000.0 * spd
+  T = 5.0 * spd
   # Time step
-  dt = spd / 4.0
+  dt = 5.0
   # Iteration count
   i = 0
   
@@ -54,7 +54,7 @@ for n in range(len(ns)):
   start_time = time.time()
   
   while model.t < T:  
-    if i % (24*25) == 0:
+    if i % 1 == 0:
       model.write_pvds(['pfo', 'h', 'N'])
       model.checkpoint(['h', 'phi', 'N', 'q'])
     
