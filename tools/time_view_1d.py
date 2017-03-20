@@ -8,7 +8,7 @@ from constants import *
 from netCDF4 import Dataset
 import numpy as np
 
-class TimeView(object):
+class TimeView1d(object):
   
   def __init__(self, input_file):
 
@@ -19,7 +19,6 @@ class TimeView(object):
     self.mesh = Mesh()
     self.input_file.read(self.mesh, "mesh", False)  
     self.V_cg = FunctionSpace(self.mesh, "CG", 1)
-    self.V_tr = FunctionSpace(self.mesh, FiniteElement("Discontinuous Lagrange Trace", "triangle", 0))
     
     
     # Get the number of time steps
@@ -56,21 +55,6 @@ class TimeView(object):
     self.pfo = Function(self.V_cg)
     # Conductivity
     self.k = Function(self.V_cg)
-    # Channel cross sectional area
-    self.S = Function(self.V_tr)
-    # Xi
-    self.Pi = Function(self.V_tr)
-    # Derivative of pressure along edges
-    self.dpw_ds = Function(self.V_tr)
-    # Derivative of phi along edges
-    self.dphi_ds = Function(self.V_tr)
-    # f
-    self.f = Function(self.V_tr)
-    # q_c
-    self.q_c = Function(self.V_tr)
-    # Channel flux
-    self.Q = Function(self.V_tr)
-    
     # Potential at 0 pressure
     phi_m = project(pcs['rho_w'] * pcs['g'] * self.B, self.V_cg)
     # Ice overburden pressure
@@ -79,9 +63,9 @@ class TimeView(object):
     self.phi0 = project(phi_m + p_i, self.V_cg)
     
     # Vertex coordinates
-    self.coords = self.V_cg.tabulate_dof_coordinates().reshape(self.V_cg.dim(), 2)
+    self.coords = self.V_cg.tabulate_dof_coordinates().reshape(self.V_cg.dim(), 1)
     self.coords_x = self.coords[:,0]
-    self.coords_y = self.coords[:,1]
+    #self.coords_y = self.coords[:,1]
     
   
   # Get Pi at the ith time step
@@ -300,7 +284,7 @@ class TimeView(object):
     
       
   # Returns an array where each row is the PFO at a point through time
-  def get_pfo_array_at_points(self, xs, ys):
+  def get_pfo_array_at_points(self, xs):
     
     pfos = np.zeros((len(xs), self.num_steps))    
     for i in range(self.num_steps):
@@ -308,9 +292,8 @@ class TimeView(object):
       
       for j in range(len(xs)):
         x = xs[j]
-        y = ys[j]
         
-        pfos[j][i] = self.pfo([x, y])
+        pfos[j][i] = self.pfo([x])
         
     return pfos
     

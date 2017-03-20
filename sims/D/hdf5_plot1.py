@@ -25,8 +25,8 @@ for j in [2]:
     N = view.get_N(i)
     t = view.get_t(i)
   
-    Ns1.append(N([10.0, 10.00]))
-    Ns2.append(N([50.0, 10.00]))
+    Ns1.append(N([10e3, 10e3]))
+    Ns2.append(N([50.0, 10e3]))
     Ns3.append(N([90.0, 10.00]))
     total_ms.append(view.get_total_m(i))
     ts.append(t)
